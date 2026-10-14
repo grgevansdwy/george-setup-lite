@@ -1,59 +1,23 @@
 # <Project name>
 
-<!--
-CLAUDE.md template: WHAT / WHY / HOW. Delete every comment and any section that doesn't apply.
-Rules: under 200 lines, specific and checkable, only what Claude can't infer from the code.
-This file is ADVICE. Anything that must always happen belongs in a hook (.claude/settings.json).
--->
+<!-- Keep it under 40 lines. Real commands only. Delete this comment. -->
 
-## WHY: purpose
-<!-- 2–4 lines. What the product does, who uses it, what matters most (e.g. "correctness over speed", "public API — never break compat"). This gives Claude the big picture so it makes better small decisions. -->
+## What / why
+<2 lines: what it does, what matters most.>
 
-## WHAT: codebase map
+## Stack and layout
+- Stack:
+- Key paths: `path` — role
 
-### Stack
-<!-- Language + version, framework + version, DB, key libraries, package manager. -->
--
+## Commands
+- Install:
+- Run:
+- Test (all):
+- Test (one file):
+- Lint / typecheck:
 
-### Layout
-<!-- Only the directories that matter, one line each. -->
-```
-src/
-  api/        #
-  services/   #
-tests/        #
-```
+## Conventions and gotchas
+- <only what differs from the language default or what Claude would get wrong>
 
-### Key modules
-<!-- The 3–8 files/modules Claude should know about, and their roles. -->
-- `path` —
-
-## HOW: working here
-
-### Commands
-<!-- Exact commands. Claude will run these. -->
-- Install: ``
-- Dev: ``
-- Test (all): ``
-- Test (single file): ``
-- Lint / typecheck: ``
-- Build: ``
-
-### Conventions
-<!-- Only things that differ from the language's defaults or that Claude would get wrong. Be specific:
-     good: "Use `zod` schemas in src/schemas for all request validation"
-     bad:  "Write clean, maintainable code" -->
--
-
-### Workflow
-- Plan non-trivial work with `/interview`. Build plans with 3+ independent units with `/fanout`, smaller ones here. Review with `/deep-review`, tidy up with `/cleanup`, and commit with `/recap`.
-- Specs live in `docs/specs/`, plans in `docs/plans/`, and the append-only decision log in `docs/DECISIONS.md`.
-- Parallel workers run in fresh git worktrees. Set one up with: ``  <!-- the install command, e.g. `pnpm install --frozen-lockfile` -->
-
-### Don't
-<!-- Hard "never" rules that a hook can't express. -->
--
-
-## What Claude gets wrong
-<!-- Add an entry each time Claude makes the same mistake twice. Delete the section if it's empty. -->
--
+## Workflow
+- Time-boxed work: `/sprint <minutes> <problem>`, then `/wrap`. Brief lives in `SPRINT.md`.

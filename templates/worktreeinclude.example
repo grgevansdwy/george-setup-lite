@@ -1,5 +1,0 @@
-# Gitignored files to copy into every worktree Claude Code creates
-# (--worktree sessions, isolation: worktree subagents, /batch, /fanout).
-# .gitignore syntax. Only files that are ALSO gitignored are copied.
-.env
-.env.local

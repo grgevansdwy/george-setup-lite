@@ -1,14 +1,21 @@
 ---
 name: architecture-reviewer
-description: Review a rough architecture or design, especially for an LLM or agent system, against a baseline of principles, defaults and red flags, and argue for or against each decision with evidence. Use when the user shares a design and asks for a review or critique, asks "why this and not that" about an architecture choice, or when the spec skill needs architecture rules for a spec.
-argument-hint: "[design text, or path to a design or spec file]"
+description: Review a rough architecture or design, especially for an LLM or agent system, against a baseline of principles, defaults and red flags, and argue for or against each decision with evidence. Use when the user shares a design and asks for a review or critique, asks "why this and not that" about an architecture choice, or when /sprint needs a quick design check before building.
+argument-hint: "[design text, or path to a design file]"
 ---
 
 # /architecture-reviewer — architecture decision baseline
 
-Design to review: $ARGUMENTS (empty = the design discussed in this conversation, or the newest `docs/specs/SPEC_*.md`).
+Design to review: $ARGUMENTS (empty = the design discussed in this conversation, or the design in `SPRINT.md`).
 
-This skill is the architecture baseline for this repo. Use it to (1) review the owner's rough architecture, (2) argue for or against decisions with evidence, and (3) supply the architecture rules when the **spec** skill drafts a spec.
+This skill is the architecture baseline for this repo. Use it to (1) review the owner's rough architecture, (2) argue for or against decisions with evidence, and (3) give `/sprint` a fast design check before building.
+
+## Sprint mode (when called from /sprint, or the budget is under ~3 hours)
+About 2 minutes, not a full review. Read only §0, §2 (Principles), CF-1/CF-2, TL-1, SO-2, §16 (Red flags) and §17.1, plus a section below only if the problem clearly touches it (KN for retrieval, ST for waiting or resuming, MA for multi-agent).
+- Check: P1/P2 (code vs model), P10 (thin slice first), P11 (start simple), CF-1/2 (workflow vs agent), TL-1, SO-2, and red flags RF-1, 2, 5, 6, 15, 25.
+- Skip unless the problem needs them: SF (safety, approvals), OB (observability), ST (state machines), MD (cost modelling), large eval suites, injection hardening.
+- Output: a 3-line verdict (biggest flaw first), the revised flow with each step marked (code) or (model), and the slice order for `SPRINT.md`. No scored table.
+- Don't ask the owner questions. State assumptions and move on.
 
 Every rule and decision has an ID (P1, CF-2, RF-7). Cite IDs when you argue, so the owner can look them up.
 
@@ -20,7 +27,7 @@ Every rule and decision has an ID (P1, CF-2, RF-7). Cite IDs when you argue, so 
 - **Principles (P)** are strong rules. Deviate only with a stated reason, and flag the deviation.
 - **Defaults** are starting points, not rules. If the owner chose differently and the choice is reasonable for the constraints, accept it in one line and move on.
 - **Product and library names are examples.** They change often. Recommend the category; name a product only as an option, and tell the owner to check current docs.
-- **The owner's locked decisions in the spec (`docs/specs/SPEC_*.md`) override this baseline.** If you believe a locked decision is wrong, say so with reasons. Do not change it yourself.
+- **The owner's locked decisions in `SPRINT.md` override this baseline.** If you believe a locked decision is wrong, say so with reasons. Do not change it yourself.
 
 ### 0.2 Argument style
 - State the biggest flaw first. If the design is sound, say so in one line.
@@ -41,11 +48,11 @@ Every rule and decision has an ID (P1, CF-2, RF-7). Cite IDs when you argue, so 
 5. **Check the red flags** (Section 16).
 6. **Output the review** in the format in Section 17.1.
 
-### 1.2 When drafting a spec
-1. The **spec** skill owns the template and writes the file. Follow it, and apply the rules below on top. Keep the spec to 1-2 pages. It is written for a human.
+### 1.2 When drafting the sprint brief
+1. `SPRINT.md` (written by `/sprint`) is the only spec. Apply the rules below on top. Keep it to about one page.
 2. Every locked decision gets a one-line reason.
-3. Anything undecided goes under Open Decisions with 2-3 options and a recommendation. Never fill a gap silently.
-4. Milestones: thin end-to-end slice first (P10), then deepen. Each milestone states what to build, how to test, and what success means.
+3. Anything undecided goes under Assumptions with your recommendation. Never fill a gap silently.
+4. Slices: thin end-to-end slice first (P10), then deepen. Each slice states what to build and how to check it.
 5. Every never-go-wrong item must map to at least one acceptance test.
 
 ### 1.3 When the owner asks "why"
@@ -442,15 +449,12 @@ OPEN QUESTIONS FOR THE OWNER:
 - <Only questions whose answer changes the design>
 ```
 
-### 17.2 Spec
-Don't write a spec from memory. Invoke the **spec** skill, which fills its own template into `docs/specs/SPEC_<TASK_NAME>.md`.
-
-### 17.3 Decision record
-Don't write decision entries by hand. Invoke the **decisions** skill for each decision that gets locked or reversed. It appends the entry to `docs/DECISIONS.md` and returns the ID (`D1`, `D2`, …) to cite.
+### 17.2 Sprint brief and decisions
+Don't write a separate spec or decision log. `/sprint` writes `SPRINT.md`: put each locked decision there as one line, `choice — reason (ID)`, citing the rule IDs from this file.
 
 ---
 
-## 18. Time-boxed builds (about 3 hours)
+## 18. Time-boxed builds (scale to the budget: 90 min to 3 hours)
 
 - Thin slice first (P10): full happy path with fakes for every external service.
 - Keep: never-go-wrong rules and their tests, structured output with validation, the tool wrapper, an audit table.

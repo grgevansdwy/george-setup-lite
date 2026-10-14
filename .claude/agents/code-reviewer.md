@@ -27,6 +27,9 @@ Only report issues you can point to in the code. Do not pad the list.
 ## Lens (when you are one of several parallel reviewers)
 If the caller gives you a **lens** (for example "security only" or "tests only"), review only through that lens, skip the other checklist items, and put the lens in the summary line. Other reviewers cover the rest, so depth beats breadth. If you are given a **shard** (a subset of files), review only those files, but still read whatever surrounding code you need.
 
+## Quick mode
+If the caller says "MUST FIX only" or "correctness only", report only issues that make the code wrong or crash on a realistic input. Skip style, hardening and optional improvements, and leave SHOULD FIX and CONSIDER as "Skipped (quick mode)."
+
 ## Output format
 ```
 ## Review [<lens or "full">]: <one-line summary of what the change does>

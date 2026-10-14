@@ -2,12 +2,14 @@
 name: investigate
 description: Debug with competing hypotheses in parallel. Reproduces a failure, generates several distinct root-cause hypotheses, fans out one debugger subagent per hypothesis to prove or disprove it, then fans in by comparing evidence. Use when a bug's cause is unclear or a first debugging attempt anchored on the wrong theory.
 disable-model-invocation: true
-argument-hint: "<symptom, failing test, or error>"
+argument-hint: "<symptom, failing test, or error> [--quick]"
 ---
 
 # /investigate — parallel hypotheses for a bug
 
 Symptom: $ARGUMENTS
+
+`--quick` (use it inside a time-boxed `/sprint`): 2 hypotheses, one round only, no explorer pass. If nothing is confirmed, report what is known and let the sprint cut the slice.
 
 ## 1. Pin down the symptom (here, briefly)
 - Find the smallest command that shows the failure (one test, one request, one script) and run it once. Record the exact error.
@@ -15,7 +17,7 @@ Symptom: $ARGUMENTS
 - Gather cheap context: the stack trace, `git log --oneline -15`, and the diff of recently changed files near the failure. For a large unfamiliar area, send one **explorer** first.
 
 ## 2. Hypotheses
-Write 3-4 hypotheses that are **genuinely different** (different layers or mechanisms, not variations of one idea). For example: bad input data / logic bug in X / environment or config / race or ordering / recent change Y. For each one, name the experiment that would settle it.
+Write 3-4 hypotheses (2 with `--quick`) that are **genuinely different** (different layers or mechanisms, not variations of one idea). For example: bad input data / logic bug in X / environment or config / race or ordering / recent change Y. For each one, name the experiment that would settle it.
 
 ## 3. Fan-out
 Spawn one **debugger** subagent per hypothesis, **in a single message**. Give each:
@@ -29,7 +31,7 @@ If the experiments would fight over shared state (one database, fixed ports, glo
 - Put the verdicts side by side: hypothesis → CONFIRMED / RULED OUT / INCONCLUSIVE → strongest evidence.
 - If exactly one is confirmed and the others are ruled out, that's the root cause.
 - If several look plausible, check whether they're one cause seen from different sides. If they're truly separate, list them all.
-- If nothing is confirmed, run **one** more round with new hypotheses based on what was ruled out. After two rounds, stop and report what is known.
+- If nothing is confirmed, run **one** more round with new hypotheses based on what was ruled out (skip this with `--quick`). After that, stop and report what is known.
 
 ## 5. Report
 ```
@@ -42,4 +44,4 @@ Reproduction: <command> → <error>
 Fix (not applied): <files and lines to change>
 Regression test: <the test that would have caught it>
 ```
-Ask whether to apply the fix. If yes, apply it, add the regression test (or hand it to **test-writer**), and rerun the reproduction.
+Ask whether to apply the fix. If yes, apply it, add the regression test, and rerun the reproduction.
